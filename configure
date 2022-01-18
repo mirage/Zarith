@@ -147,7 +147,7 @@ checkinc()
     echo "#include <$1>" > tmp.c
     echo "int main() { return 1; }" >> tmp.c
     r=1
-    $ocamlc -ccopt "$ccopt $ccinc" -c tmp.c -o tmp.o >/dev/null 2>/dev/null || r=0
+    $CC $ccopt $ccinc -c tmp.c -o tmp.o >/dev/null 2>/dev/null || r=0
     if test ! -f tmp.o; then r=0; fi
     rm -f tmp.c tmp.o
     if test $r -eq 0; then echo "not found"; else echo "found"; fi
@@ -157,26 +157,25 @@ checkinc()
 checklib()
 {
     echo_n "library $1: "
-    rm -f tmp.ml tmp.out
-    echo "" > tmp.ml
+    rm -f tmp.c tmp.out
+    echo "int main() { return 1; }" > tmp.c
     r=1
-    $ocamlc -custom -ccopt "$ldflags $cclib" tmp.ml -cclib -l$1 -o tmp.out >/dev/null 2>/dev/null || r=0
+    $CC $ccopt $ldflags $cclib tmp.c -l$1 -o tmp.out >/dev/null 2>/dev/null || r=0
     if test ! -x tmp.out; then r=0; fi
-    rm -f tmp.out tmp.ml tmp.cmi tmp.cmo
+    rm -f tmp.c tmp.o tmp.out
     if test $r -eq 0; then echo "not found"; else echo "found"; fi
     return $r
 }
 
 checkcc()
 {
-    echo_n "checking compilation with $ocamlc $ccopt: "
+    echo_n "checking compilation with $cc $ccopt: "
     rm -f tmp.c tmp.out
     echo "int main() { return 1; }" >> tmp.c
-    echo "" > tmpml.ml
     r=1
-    $ocamlc -ccopt "$ccopt" tmp.c tmpml.ml -o tmp.out >/dev/null 2>/dev/null || r=0
+    $CC $ccopt tmp.c -o tmp.out >/dev/null 2>/dev/null || r=0
     if test ! -x tmp.out; then r=0; fi
-    rm -f tmp.c tmp.o tmp.out tmpml.ml tmpml.cm*
+    rm -f tmp.c tmp.o tmp.out
     if test $r -eq 0; then echo "not working"; else echo "working"; fi
     return $r
 }
