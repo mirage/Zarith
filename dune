@@ -25,11 +25,13 @@
  (target Makefile)
  (deps configure config.guess env)
  (action
-  (bash "env %{read:env} ./configure")))
+  (bash
+   "env %{read:env} ./configure --ocamllibdir %{ocaml-config:standard_library}")))
 
 (rule
  (target env)
- (action (copy gmp.%{lib-available:gmp} env)))
+ (action
+  (copy gmp.%{lib-available:gmp} env)))
 
 (rule
  (target gmp.true)
@@ -39,13 +41,18 @@
   %{lib:gmp:libgmp.so}
   %{lib:gmp:gmp.h})
  (action
-  (with-stdout-to %{target} (run %{exe} --cc "%{cc}" --with-gmp=%{lib:gmp:libgmp.a}))))
+  (with-stdout-to
+   %{target}
+   (run %{exe} --cc "%{cc}" --with-gmp=%{lib:gmp:libgmp.a}))))
 
 (rule
  (target gmp.false)
- (deps (:exe configure_env.exe))
+ (deps
+  (:exe configure_env.exe))
  (action
-  (with-stdout-to %{target} (run %{exe} --cc "%{cc}" --with-conf-gmp))))
+  (with-stdout-to
+   %{target}
+   (run %{exe} --cc "%{cc}" --with-conf-gmp))))
 
 (rule
  (target cflags.sexp)
