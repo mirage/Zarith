@@ -27,3 +27,4 @@ unboxed integers, for speed and space economy."""
 url {
  src: "git+https://github.com/mirage/Zarith.git#22adda581a979c020de856e85781814a0ad5769a"
 }
+tags: ["cross-compile"]
