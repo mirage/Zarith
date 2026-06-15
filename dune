@@ -89,7 +89,7 @@
    zarith_version.ml
    (progn
     (run echo "let")
-    (bash "grep \"version\" META | head -1")))))
+    (bash "grep \"^version = \" META")))))
 
 (library
  (name zarith_top)
